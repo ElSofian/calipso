@@ -1,4 +1,4 @@
-const { Events, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, InteractionType, ModalBuilder, TextInputBuilder, TextInputStyle, PermissionFlagsBits } = require('discord.js');
+const { Events, EmbedBuilder, ActionRowBuilder, ChannelType, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, InteractionType, ModalBuilder, TextInputBuilder, TextInputStyle, PermissionFlagsBits } = require('discord.js');
 const axios = require('axios');
 
 module.exports = {
@@ -33,9 +33,10 @@ module.exports = {
 			if (interaction.type == InteractionType.ApplicationCommand) return command.run(client, interaction, { errorEmbed, successEmbed });
 			if (interaction.type == InteractionType.MessageComponent || interaction.type == InteractionType.ModalSubmit) {
 				
+				
 				// INTERACTION WITH ABSENCE BUTTON
 
-				if (interaction.customId == "absence" && interaction.message.id == client.config.messages.msgAbsenceId) {
+				if (interaction.customId == "absence" && interaction.message.id == client.config.messages.absenceId) {
 					const modal = new ModalBuilder()
 						.setCustomId("m_absence")
 						.setTitle("Absence")
@@ -99,7 +100,7 @@ module.exports = {
 
 				// INTERACTION WITH PHONE/IBAN BUTTON
 
-				if ((interaction.customId == "phone" || interaction.customId == "iban") && interaction.message.id == client.config.messages.msgEditId) {
+				if ((interaction.customId == "phone" || interaction.customId == "iban") && interaction.message.id == client.config.messages.editId) {
 					const customId = interaction.customId;
 					
 					const embed = new EmbedBuilder()
