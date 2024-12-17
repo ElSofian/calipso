@@ -7,9 +7,8 @@ module.exports = {
         const embed = new EmbedBuilder()
         .setColor(client.config.embed.color)
         .setTitle("Informations recrutement")
-        .setDescription(`Les recrutements se passent lors des sessions de recrutement organisés par la Direction.
-            
-        Lorsqu'une session est organisée, elle sera indiquée dans <#${client.config.channels.recrutmentId}> !`)
+        .setDescription(`L'entreprise Calipso est une entreprise Anglais basée sur Londres et n'a pas encore de balise sur Los Santos.
+            De ce fait, nous ne recrutons pas !`)
 
         interaction.reply({ embeds: [embed] });
     }

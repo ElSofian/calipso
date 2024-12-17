@@ -7,9 +7,10 @@ module.exports = {
 		client.logger.info("Ready!");
 
 		let activities = [
-			{ name: `Optimise votre temps de 400%`, type: ActivityType.Custom },
-			{ name: `les comptabilité optimisées`, type: ActivityType.Watching },
-			{ name: `Prenez rdv maintenant !`, type: ActivityType.Custom }
+			{ name: `les demandes de support`, type: ActivityType.Watching },
+			{ name: `Contactez-nous !`, type: ActivityType.Custom },
+			{ name: `Prêt à vous simplifier la vie ?`, type: ActivityType.Custom },
+			{ name: "vos besoins professionnels", type: ActivityType.Listening },
 		]
 
 		client.user.setActivity(activities[0].name, { type: activities[0].type });

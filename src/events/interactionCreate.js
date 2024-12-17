@@ -36,8 +36,7 @@ module.exports = {
 				// INTERACTION WITH TICKET
 
 				if (interaction.customId == "ticket" && interaction.message.id == client.config.messages.ticketId) {
-					// create a channel in 1318371631424606228 category
-					const category = interaction.guild.channels.cache.get("1318371631424606228");
+					const category = interaction.guild.channels.cache.get(client.config.categories.ticketId);
 					if (!category) return console.error("Category not found.");
 
 					const ticket = interaction.guild.channels.cache.find(c => c.name == interaction.member?.nickname?.toLowerCase()?.replace(" ", "-") || c.name == interaction.member.user.username.toLowerCase().replace(" ", "-"));
@@ -67,7 +66,7 @@ module.exports = {
 					const embed = new EmbedBuilder()
 						.setColor(client.config.embed.color)
 						.setAuthor({ name: interaction.member.nickname || interaction.member.user.username, iconURL: interaction.member.user.displayAvatarURL() })
-						.setDescription(`Bienvenue dans votre ticket de support.,
+						.setDescription(`Bienvenue dans votre ticket de support,
 						
 						Nous vous remercions de nous avoir contacté.
 						Un membre de notre équipe va bientôt vous répondre. Merci de patienter.
