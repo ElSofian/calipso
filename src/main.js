@@ -17,7 +17,7 @@ const client = new Client({
 
 client.config = require('./config.js');
 client.functions = new (require('./structures/Functions.js'))(client);
-//client.db = new (require('./structures/Database.js'))(client);
+client.db = new (require('./structures/Database.js'))(client);
 client.google = new (require('./structures/GoogleSheet.js'))(client);
 client.logger = new (require('./structures/Logger.js'))();
 
