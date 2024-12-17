@@ -1,12 +1,5 @@
 const { ApplicationCommandOptionType, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
-const roles = [
-    { name: "Responsable", value: "Responsable" },
-    { name: "Ressources Humaines", value: "Ressources Humaines" },
-    { name: "Chef d'équipe", value: "Chef d'équipe" },
-    { name: "Vendeur Expérimenté", value: "Vendeur Expérimenté" },
-    { name: "Vendeur", value: "Vendeur" },
-    { name: "Vendeur Novice", value: "Vendeur Novice" },
-];
+const roles = require("../config.js");
 
 module.exports = {
     name: "downgrade",
@@ -23,7 +16,7 @@ module.exports = {
             name: "grade",
             description: "Le nouveau grade de l'employé",
             type: ApplicationCommandOptionType.String,
-            choices: roles,
+            choices: roles.grades.map(role => ({ name: role, value: role })),
             required: false
         }
     ],

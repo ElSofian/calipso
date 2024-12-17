@@ -1,12 +1,5 @@
 const { ApplicationCommandOptionType, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
-const roles = [
-    { name: "Responsable", value: "Responsable" },
-    { name: "Ressources Humaines", value: "Ressources Humaines" },
-    { name: "Chef d'équipe", value: "Chef d'équipe" },
-    { name: "Vendeur Expérimenté", value: "Vendeur Expérimenté" },
-    { name: "Vendeur", value: "Vendeur" },
-    { name: "Vendeur Novice", value: "Vendeur Novice" },
-];
+const roles = require("../config.js");
 
 module.exports = {
     name: "upgrade",
@@ -23,14 +16,7 @@ module.exports = {
             name: "grade",
             description: "Le nouveau grade de l'employé",
             type: ApplicationCommandOptionType.String,
-            choices: [
-                { name: "Responsable", value: "Responsable" },
-                { name: "Ressources Humaines", value: "Ressources Humaines" },
-                { name: "Chef d'équipe", value: "Chef d'équipe" },
-                { name: "Vendeur Expérimenté", value: "Vendeur Expérimenté" },
-                { name: "Vendeur", value: "Vendeur" },
-                { name: "Vendeur Novice", value: "Vendeur Novice" },
-            ],
+            choices: roles.grades.map(role => ({ name: role, value: role })),
             required: false
         }
     ],
@@ -46,12 +32,12 @@ module.exports = {
 
         const currentGrade = employeeData.grade;
         if (grade && currentGrade == grade) return errorEmbed(`Cet employé a déjà le grade **${currentGrade}**.`, false, "editReply");
-        if (!grade && employeeData.grade == roles[0].value) return errorEmbed(`Vous ne pouvez pas promouvoir un ${roles[0].value}.`, false, "editReply");
+        if (!grade && employeeData.grade == roles[0]) return errorEmbed(`Vous ne pouvez pas promouvoir un ${roles[0]}.`, false, "editReply");
         
-        const currentRoleIndex = roles.findIndex(role => role.value === currentGrade);
+        const currentRoleIndex = roles.findIndex(role => role === currentGrade);
         if (currentRoleIndex === -1) return errorEmbed("Le grade actuel de cet employé n'a pas été trouvé.", false, "editReply");
-        
-        const newRole = roles[currentRoleIndex - 1]?.value;
+
+        const newRole = roles[currentRoleIndex - 1];
         
         /* Add roles ~ Cannot work in examples shows
         const currentRoleId = client.functions.getGradeRoleId(currentGrade);

@@ -63,11 +63,22 @@ module.exports = class Database {
         if (!Array.isArray(employees[employeeIndex].specialities))
             employees[employeeIndex].specialities = [];
     
-        if (!employees[employeeIndex].specialities.includes(speciality))
-            employees[employeeIndex].specialities.push(speciality);
+        if (employees[employeeIndex].specialities.includes(speciality)) return null;
     
+        employees[employeeIndex].specialities.push(speciality);
         return this.db.set("employees", employees);
     }
+    
+
+    async removeSpeciality(employeeId, speciality) {
+        const employee = await this.getEmployee(employeeId);
+        if (!employee) return null;
+    
+        const updatedSpecialities = employee.specialities.filter(s => s !== speciality);
+    
+        return this.setEmployee(employeeId, "specialities", updatedSpecialities);
+    }
+    
 
     async setEmployee(userId, key, value) {
         const employees = await this.getEmployees() || [];
