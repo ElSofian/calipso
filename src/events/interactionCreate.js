@@ -7,10 +7,6 @@ module.exports = {
 		if(!interaction.inGuild() || !interaction.guildId) return;
 
 		// Functions
-
-		function fastEmbed(description, color = client.config.colors.default) {
-			return new EmbedBuilder().setColor(color).setDescription(description);
-		}
 		
 		function errorEmbed(description, justEmbed = false, replyType = "reply", ephemeral = true) {
 			if(!justEmbed) return interaction[replyType]({ embeds: [new EmbedBuilder().setColor("Red").setDescription(description)], components: [], content: null, files: [], ephemeral: ephemeral }).catch(() => {});
@@ -30,87 +26,13 @@ module.exports = {
 			return;
 		}
 
-		if (command?.admin && (!interaction.member.permissions.has(PermissionFlagsBits.Administrator) || !interaction.member.roles.cache.has(client.config.roles.manage))) return errorEmbed("Vous n'avez pas la permission d'utiliser cette commande.");
-		if (command?.employeeOnly && !interaction.member.roles.cache.has(client.config.roles.employeeRoleId)) return errorEmbed("Vous n'avez pas la permission d'utiliser cette commande.");
+		if (command?.admin && !client.config.admins.includes(interaction.member.id) && !interaction.member.roles.cache.has(client.config.roles.manage)) return errorEmbed("Vous n'avez pas la permission d'utiliser cette commande.");
+		if (command?.employeeOnly && !client.config.admins.includes(interaction.member.id) && !interaction.member.roles.cache.has(client.config.roles.employeeRoleId)) return errorEmbed("Vous n'avez pas la permission d'utiliser cette commande.");
 
 		try {
 			if (interaction.type == InteractionType.ApplicationCommand) return command.run(client, interaction, { errorEmbed, successEmbed });
 			if (interaction.type == InteractionType.MessageComponent || interaction.type == InteractionType.ModalSubmit) {
 				
-
-				// INTERACTION WITH FUEL EMBED
-
-				if (interaction.customId == "sm" && interaction.message.id == client.config.messages.msgPumpsId) {
-
-					const embed = interaction.message.embeds[0];
-					if (!embed) return interaction.reply({ content: "Erreur : embed introuvable.", ephemeral: true });
-
-					const pumps = await client.db.getPumps();
-					const pump = pumps.find(p => p.label == interaction.values[0].replace(" 🚨", ""))
-
-					const firstInteraction = await interaction.reply({ 
-						embeds: [fastEmbed(`Combien de litres possède la pompe maintenant ?\n**IMPORTANT:** Répondez en me mentionnant au début ! Exemple: <@${client.user.id}> 3500`)], 
-						ephemeral: true 
-					});
-					if (!firstInteraction) return;
-
-					const filter = m => m.author.id == interaction.member.user.id && (m.content.startsWith(`<@${client.user.id}>`) || m.content.startsWith(`<@!${client.user.id}>`));
-					const collector = interaction.channel.createMessageCollector({ filter, time: 60000 });
-
-					collector.on('collect', async m => {
-						const litres = parseInt(m.content.replace(/<@!?\d+>/, '').trim());
-						if (isNaN(litres)) return await interaction.followUp({ embeds: [fastEmbed("Veuillez entrer un nombre valide.", "Red")], ephemeral: true });
-
-						if (!pump) {
-							m.delete().catch(() => {});
-							return await interaction.followUp({ embeds: [fastEmbed("Pompe non trouvée.", "Red")], ephemeral: true });
-						}
-
-						if (litres > pump.pumpLimit) {
-							m.delete().catch(() => {});
-							return await interaction.followUp({ embeds: [fastEmbed(`La pompe **${pump.label}** ne peut pas avoir plus de **${pump.pumpLimit} litres**.`, "Red")], ephemeral: true });
-						}
-						pump.fuel = litres;
-
-						embed.fields = embed.fields.map(field => {
-							if (field.name.replace(" 🚨", "") === pump.label) {
-								const isAlert = pump.fuel < pump.alertAmount;
-								field.name = `${pump.label}${isAlert ? " 🚨" : ""}`;
-								field.value = `» ${pump.fuel} litres`;
-							}
-							return field;
-						});
-
-						const sm = new StringSelectMenuBuilder()
-							.setCustomId("sm")
-							.setPlaceholder("Choisissez la pompe que vous voulez remplir");
-
-						for (const pump of pumps) {
-							sm.addOptions(
-								new StringSelectMenuOptionBuilder()
-									.setLabel(`${pump.label}${pump.fuel < pump.alertAmount ? " 🚨" : ""}`)
-									.setValue(pump.label)
-							);
-						}
-
-						const row = new ActionRowBuilder().addComponents(sm);
-
-						await interaction.message.edit({ embeds: [embed], components: [row] });
-						await interaction.followUp({ 
-							embeds: [fastEmbed(`Vous avez mis la pompe **${pump.label}** à **${litres} litres**.`)], 
-							ephemeral: true 
-						});
-
-						firstInteraction.delete().catch(() => {});
-						m.delete().catch(() => {});
-						collector.stop();
-					});
-					return;
-				}
-
-				// -----------------------------------------
-
-
 				// INTERACTION WITH ABSENCE BUTTON
 
 				if (interaction.customId == "absence" && interaction.message.id == client.config.messages.msgAbsenceId) {
@@ -195,7 +117,7 @@ module.exports = {
 
 					collector.on('collect', async m => {
 						const value = m.content.replace(/<@!?\d+>/, '').trim();
-						if (!value) return await interaction.followUp({ embeds: [fastEmbed("Veuillez entrer une valeur valide.", "Red")], ephemeral: true });
+						if (!value) return await interaction.followUp({ embeds: [errorEmbed("Veuillez entrer une valeur valide.", true)], ephemeral: true });
 
 						const [prenom, nom] = await client.db.getEmployeeName(interaction.member.id, "array");
 						if (!prenom || !nom) return console.error(`Employé ${interaction.member.id} non trouvé.`);

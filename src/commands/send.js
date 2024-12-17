@@ -8,8 +8,6 @@ module.exports = {
         description: "L'embed à envoyer",
         type: ApplicationCommandOptionType.String,
         choices: [
-            { name: "Pompes", value: "pumps" },
-            { name: "Prix Essence", value: "gaz_price" },
             { name: "Absences", value: "absence" },
             { name: "Modification d'informations pour employés", value: "edit" }
         ],
@@ -22,40 +20,8 @@ module.exports = {
         .setColor(client.config.colors.default)
 
         const components = new ActionRowBuilder()
-        const pumps = await client.db.getPumps();
         
         switch(embedType) {
-            case "pumps": {
-
-                const sm = new StringSelectMenuBuilder()
-                .setCustomId("sm")
-                .setPlaceholder("Choisissez la pompe que vous voulez éditer")
-
-                embed
-                .setThumbnail("https://imgur.com/TRDDKOW.png")
-                .setImage("https://imgur.com/9PZ1WQb.png")
-                .setTitle("Pompes")
-                for (const pump of pumps) {
-                    embed.addFields([{ name: pump.label, value: `» ${pump.fuel} litres` }]);
-                    sm.addOptions(
-                        new StringSelectMenuOptionBuilder()
-                            .setLabel(`${pump.label}${pump.fuel < pump.alertAmount ? " 🚨" : ""}`)
-                            .setValue(pump.label)
-                    );
-                }
-                components.addComponents(sm);
-                break;
-            }
-            case "gaz_price": {
-
-                embed
-                .setThumbnail("https://imgur.com/TRDDKOW.png")
-                .setImage("https://imgur.com/9PZ1WQb.png")
-                .setTitle("Prix des Pompes")
-                for (const pump of pumps)
-                    embed.addFields([{ name: pump.label, value: `» ${pump.price}$/L`, inline: true }]);
-                break;
-            }
             case "absence": {
 
                 const row = new ButtonBuilder()

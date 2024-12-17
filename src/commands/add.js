@@ -18,12 +18,7 @@ module.exports = {
             description: "La spécialité à ajouter",
             type: ApplicationCommandOptionType.String,
             choices: [
-                { name: "Livreur", value: "Livreur" },
-                { name: "Cuisinier", value: "Cuisinier" },
-                { name: "Caoutchouc", value: "Caoutchouc" },
-                { name: "Logisticien", value: "Logisticien" },
                 { name: "Formateur", value: "Formateur" },
-                { name: "Gestion des commandes", value: "Gestion des commandes" },
                 { name: "Evenementiel", value: "Evenementiel" },
                 { name: "Communication", value: "Communication" },
             ],

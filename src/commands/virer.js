@@ -21,26 +21,11 @@ module.exports = {
         const employeeData = await client.db.getEmployee(employee.id);
         if (!employeeData) return errorEmbed("Cet employé n'est pas présent dans la base de données de l'entreprise.", false, "editReply");
 
-        const roles = [
-            "Responsable",
-            "Ressources Humaines",
-            "Chef d'équipe Vendeur",
-            "Chef d'équipe Pompiste",
-            "Vendeur Expérimenté",
-            "Pompiste Expérimenté",
-            "Vendeur",
-            "Pompiste",
-            "Vendeur Novice",
-            "Pompiste Novice",
-        ];
-
         const employeeMember = interaction.guild.members.cache.get(employee.id);
+        const roleId = client.functions.getGradeRoleId(employeeData.grade);
 
-        for (const role of roles) {
-            const roleId = client.functions.getGradeRoleId(role);
-            if (employeeMember.roles.cache.has(roleId))
-                employeeMember.roles.remove(roleId).catch(e => console.error(e));
-        }
+        if (employeeMember.roles.cache.has(roleId))
+            employeeMember.roles.remove(roleId).catch(e => console.error(e));
 
         if (["Responsable", "Ressources Humaines"].includes(employeeData.grade))
             employeeMember.roles.remove(client.config.roles.manageRole).catch(e => console.error(e));
