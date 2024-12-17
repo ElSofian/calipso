@@ -8,7 +8,7 @@ module.exports = class Functions {
         switch (grade) {
             case "Responsable": gradeRoleId = this.client.config.roles.responsable; break;
             case "Ressources Humaines": gradeRoleId = this.client.config.roles.humanRessources; break;
-            case "Chef d'équipe": gradeRoleId = this.client.config.roles.salesTeamChief; break;
+            case "Chef d'équipe": gradeRoleId = this.client.config.roles.teamChief; break;
             case "Vendeur Expérimenté": gradeRoleId = this.client.config.roles.salesExpert; break;
             case "Vendeur": gradeRoleId = this.client.config.roles.sales; break;
             case "Vendeur Novice": gradeRoleId = this.client.config.roles.salesNovice; break;

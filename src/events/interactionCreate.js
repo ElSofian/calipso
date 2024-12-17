@@ -103,7 +103,7 @@ module.exports = {
 					const customId = interaction.customId;
 					
 					const embed = new EmbedBuilder()
-					.setColor(client.config.colors.default)
+					.setColor(client.config.embed.color)
 					.setTitle(customId == "phone" ? "Numéro de Téléphone" : "IBAN")
 					.setDescription(`Veuillez entrer votre ${customId == "phone" ? "nouveau numéro de téléphone" : "nouvel IBAN"}.
 						

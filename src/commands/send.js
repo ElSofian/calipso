@@ -17,7 +17,7 @@ module.exports = {
         const embedType = interaction.options.getString("embed");
         
         const embed = new EmbedBuilder()
-        .setColor(client.config.colors.default)
+        .setColor(client.config.embed.color)
 
         const components = new ActionRowBuilder()
         

@@ -103,7 +103,7 @@ module.exports = {
             const specilityRoleId = client.functions.getSpecialityRoleId(specialite);
             const configRoles = client.config.roles;
 
-            const roles = [configRoles.employee, configRoles.separationSales, gradeRoleId, specilityRoleId];
+            const roles = [configRoles.employee, configRoles.separationEmployee, gradeRoleId, specilityRoleId];
             if (["Responsable", "Ressources Humaines"].includes(grade)) roles.push(configRoles.manageRoleId);
             if (specilityRoleId) roles.push(configRoles.separationSpeciality);
 
