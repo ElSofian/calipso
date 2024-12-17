@@ -40,6 +40,7 @@ module.exports = {
         if (grade && currentGrade == grade) return errorEmbed(`Cet employé a déjà le grade **${currentGrade}**.`, false, "editReply");
         if (!grade && employeeData.grade == "Responsable") return errorEmbed("Vous ne pouvez pas promouvoir un responsable.", false, "editReply");
 
+        /* Add roles ~ Cannot work in examples shows
         const roles = ["Responsable", "Ressources Humaines"];
         if (["Vendeur Novice", "Vendeur", "Vendeur Expérimenté", "Chef d'équipe Vendeur"].includes(currentGrade)) 
             roles.push("Chef d'équipe Vendeur", "Vendeur Expérimenté", "Vendeur", "Vendeur Novice");
@@ -58,6 +59,7 @@ module.exports = {
         
         employeeMember.roles.add(newRoleId).catch(e => console.error(e));
         employeeMember.roles.add(currentRoleId).catch(e => console.error(e));
+        */
 
         const data = {
             action: "upgradeEmployee",

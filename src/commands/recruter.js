@@ -99,6 +99,7 @@ module.exports = {
             await client.db.createEmployee(employee.id, prenom, nom, birthDate, grade, specialite, phone, iban);
             await client.google.post(data);
             
+            /* Add roles ~ Cannot work in examples show
             const gradeRoleId = client.functions.getGradeRoleId(grade);
             const specilityRoleId = client.functions.getSpecialityRoleId(specialite);
             const configRoles = client.config.roles;
@@ -111,7 +112,8 @@ module.exports = {
             if (!employeeMember) return errorEmbed("Cet employé n'est pas présent sur le serveur.", false, "editReply");
             
             employeeMember.roles.add(roles).catch(e => console.error(e));
-
+            */
+            
             successEmbed(`**${prenom} ${nom}** ajouté à Google Sheets !`, false, false, "editReply");
 
         } catch (error) {

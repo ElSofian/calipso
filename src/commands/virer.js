@@ -21,6 +21,7 @@ module.exports = {
         const employeeData = await client.db.getEmployee(employee.id);
         if (!employeeData) return errorEmbed("Cet employé n'est pas présent dans la base de données de l'entreprise.", false, "editReply");
 
+        /* Add roles ~ Cannot work in examples shows
         const employeeMember = interaction.guild.members.cache.get(employee.id);
         const roleId = client.functions.getGradeRoleId(employeeData.grade);
 
@@ -35,6 +36,7 @@ module.exports = {
             client.config.roles.separationEmployee,
             client.config.roles.separationSpeciality,
         ]).catch(e => console.error(e));
+        */
 
         const data = {
             action: "deleteEmployee",

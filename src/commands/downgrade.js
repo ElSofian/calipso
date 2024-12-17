@@ -40,6 +40,7 @@ module.exports = {
         if (grade && currentGrade == grade) return errorEmbed(`Cet employé a déjà le grade **${currentGrade}**.`, false, "editReply");
         if (!grade && (employeeData.grade == "Vendeur Novice" || employeeData.grade == "Pompiste Novice")) return errorEmbed("Vous ne pouvez pas rétrograder un vendeur/pompiste novice.", false, "editReply");
 
+        /* Add roles ~ Cannot work in examples shows
         const roles = ["Responsable", "Ressources Humaines"];
         if (["Vendeur Novice", "Vendeur", "Vendeur Expérimenté", "Chef d'équipe Vendeur"].includes(currentGrade)) 
             roles.push("Chef d'équipe Vendeur", "Vendeur Expérimenté", "Vendeur", "Vendeur Novice");
@@ -58,6 +59,7 @@ module.exports = {
         
         employeeMember.roles.add(newRoleId).catch(e => console.error(e));
         employeeMember.roles.remove(currentRoleId).catch(e => console.error(e));
+        */
 
         const data = {
             action: "downgradeEmployee",
