@@ -13,7 +13,8 @@ module.exports = {
             description: "L'employé à qui ajouter la spécialité",
             type: ApplicationCommandOptionType.User,
             required: true
-        }, {
+        },
+        {
             name: "spécialité",
             description: "La spécialité à ajouter",
             type: ApplicationCommandOptionType.String,

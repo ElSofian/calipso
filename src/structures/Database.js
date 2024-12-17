@@ -1,22 +1,32 @@
-const { QuickDB } = require('quick.db');
-
 module.exports = class Database {
-    constructor(client) {
+    constructor(client, db) {
         this.client = client;
-        this.db = new QuickDB();
+        this.db = db;
     }
 
     // Database
 
     async init() {
-        await this.db.set("employees", []);
+        const employees = await this.db.get("employees");
+        if (!employees) {
+            await this.db.set("employees", []);
+        }
+    }
+
+    async reset() {
+        await this.db.delete("employees");
+        await this.init();
     }
 
     // Employees
 
+    async getEmployees() {
+        return this.db.get("employees");
+    }
+
     async getEmployee(userId) {
-        const employee = await this.db.get(`employees.${userId}`);
-        return employee || null;
+        const employees = await this.db.get("employees") || [];
+        return employees.find(e => e.user_id === userId) || null;
     }
 
     async getEmployeeName(userId, returnType = "string") {
@@ -32,27 +42,45 @@ module.exports = class Database {
     }
 
     async createEmployee(userId, firstName, lastName, birthDate, grade, speciality, phone, iban) {
-        await this.db.push(`employees.${userId}`, { 
-            user_id: userId, 
-            first_name: firstName, 
-            last_name: lastName, 
-            birth_date: birthDate, 
-            grade, 
-            specialities: [speciality], 
-            phone, 
-            iban 
+       return this.db.push("employees", {
+            user_id: userId,
+            first_name: firstName,
+            last_name: lastName,
+            birth_date: birthDate,
+            grade,
+            specialities: [speciality],
+            phone,
+            iban
         });
     }
 
     async addSpeciality(employeeId, speciality) {
-        await this.db.push(`employees.${employeeId}.specialities`, speciality);
+        const employees = await this.getEmployees() || [];
+    
+        const employeeIndex = employees.findIndex(emp => emp.user_id === employeeId);
+        if (employeeIndex === -1) return null;
+    
+        if (!Array.isArray(employees[employeeIndex].specialities))
+            employees[employeeIndex].specialities = [];
+    
+        if (!employees[employeeIndex].specialities.includes(speciality))
+            employees[employeeIndex].specialities.push(speciality);
+    
+        return this.db.set("employees", employees);
     }
 
     async setEmployee(userId, key, value) {
-        await this.db.set(`employees.${userId}.${key}`, value);
+        const employees = await this.getEmployees() || [];
+
+        const employeeIndex = employees.findIndex(emp => emp.user_id === userId);
+        if (employeeIndex === -1) return null;
+
+        employees[employeeIndex][key] = value;
+
+        return this.db.set("employees", employees);
     }
 
     async deleteEmployee(userId) {
-        await this.db.delete(`employees.${userId}`);
+        return this.db.pull("employees", (e) => e.user_id === userId);
     }
 }

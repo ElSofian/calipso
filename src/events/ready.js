@@ -12,9 +12,8 @@ module.exports = {
 			{ name: `Prenez rdv maintenant !`, type: ActivityType.Custom }
 		]
 
-		client.user.setActivity(activities[0].name, { type: activities[0].type });
-
-		let i = 0;
+		let i = Math.floor(Math.random() * activities.length);
+		client.user.setActivity(activities[i].name, { type: activities[i].type });
 		setInterval(() => {
 			client.user.setActivity(activities[i].name, { type: activities[i].type });
 			i = ++i % activities.length;

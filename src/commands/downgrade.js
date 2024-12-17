@@ -1,4 +1,12 @@
 const { ApplicationCommandOptionType, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const roles = [
+    { name: "Responsable", value: "Responsable" },
+    { name: "Ressources Humaines", value: "Ressources Humaines" },
+    { name: "Chef d'équipe", value: "Chef d'équipe" },
+    { name: "Vendeur Expérimenté", value: "Vendeur Expérimenté" },
+    { name: "Vendeur", value: "Vendeur" },
+    { name: "Vendeur Novice", value: "Vendeur Novice" },
+];
 
 module.exports = {
     name: "downgrade",
@@ -15,14 +23,7 @@ module.exports = {
             name: "grade",
             description: "Le nouveau grade de l'employé",
             type: ApplicationCommandOptionType.String,
-            choices: [
-                { name: "Responsable", value: "Responsable" },
-                { name: "Ressources Humaines", value: "Ressources Humaines" },
-                { name: "Chef d'équipe", value: "Chef d'équipe" },
-                { name: "Vendeur Expérimenté", value: "Vendeur Expérimenté" },
-                { name: "Vendeur", value: "Vendeur" },
-                { name: "Vendeur Novice", value: "Vendeur Novice" },
-            ],
+            choices: roles,
             required: false
         }
     ],
@@ -36,20 +37,16 @@ module.exports = {
         const employeeData = await client.db.getEmployee(employee.id);
         if (!employeeData) return errorEmbed("Cet employé n'est pas présent dans la base de données de l'entreprise.", false, "editReply");
 
-        const currentGrade = employeeData.grade;
+        const currentGrade = employeeData.grade; // Vendeur Novice
         if (grade && currentGrade == grade) return errorEmbed(`Cet employé a déjà le grade **${currentGrade}**.`, false, "editReply");
-        if (!grade && (employeeData.grade == "Vendeur Novice" || employeeData.grade == "Pompiste Novice")) return errorEmbed("Vous ne pouvez pas rétrograder un vendeur/pompiste novice.", false, "editReply");
+        if (!grade && employeeData.grade == roles[roles.length - 1].value) return errorEmbed(`Vous ne pouvez pas rétrograder un ${roles[roles.length - 1].value}.`, false, "editReply");
+        
+        const currentRoleIndex = roles.findIndex(role => role.value === currentGrade);
+        if (currentRoleIndex === -1) return errorEmbed("Le grade actuel de cet employé n'a pas été trouvé.", false, "editReply");
 
+        const newRole = roles[currentRoleIndex + 1].value;
+        
         /* Add roles ~ Cannot work in examples shows
-        const roles = ["Responsable", "Ressources Humaines"];
-        if (["Vendeur Novice", "Vendeur", "Vendeur Expérimenté", "Chef d'équipe Vendeur"].includes(currentGrade)) 
-            roles.push("Chef d'équipe Vendeur", "Vendeur Expérimenté", "Vendeur", "Vendeur Novice");
-        else if (["Pompiste Novice", "Pompiste", "Pompiste Expérimenté", "Chef d'équipe Pompiste"].includes(currentGrade))
-            roles.push("Chef d'équipe Pompiste", "Pompiste Expérimenté", "Pompiste", "Pompiste Novice");
-
-        const currentRoleIndex = roles.indexOf(currentGrade);
-        const newRole = roles[currentRoleIndex + 1]
-
         const currentRoleId = client.functions.getGradeRoleId(currentGrade);
         const newRoleId = client.functions.getGradeRoleId(grade ?? newRole);
         if (!newRoleId) return errorEmbed(`Je n'ai pas trouvé le rôle **${newRoleId}**.`, false, "editReply");

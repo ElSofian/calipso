@@ -5,6 +5,7 @@ const loadCommands = require('./handlers/loadCommands.js');
 const loadEvents = require ('./handlers/loadEvents.js');
 const registerCommands = require('./handlers/registerCommands.js');
 
+const db = new QuickDB();
 const client = new Client({
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 	intents: [
@@ -18,7 +19,7 @@ const client = new Client({
 
 client.config = require('./config.js');
 client.functions = new (require('./structures/Functions.js'))(client);
-client.db = new (require('./structures/Database.js'))(client);
+client.db = new (require('./structures/Database.js'))(client, db);
 client.google = new (require('./structures/GoogleSheet.js'))(client);
 client.logger = new (require('./structures/Logger.js'))();
 

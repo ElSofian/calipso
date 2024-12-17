@@ -83,6 +83,9 @@ module.exports = {
         const dateCheck = client.functions.checkDate(birthDate, true);
         if (!dateCheck.valid) return errorEmbed(dateCheck.errorMsg, false, "editReply");
 
+        const employeeData = await client.db.getEmployee(employee.id);
+        if (employeeData) return errorEmbed("Cet employé est déjà présent dans la base de données de l'entreprise.", false, "editReply");
+
         try {
 
             const data = {
