@@ -1,4 +1,5 @@
 const { Client, Partials, GatewayIntentBits, Events } = require('discord.js');
+const { QuickDB } = require('quick.db');
 require('dotenv').config();
 const loadCommands = require('./handlers/loadCommands.js');
 const loadEvents = require ('./handlers/loadEvents.js');
@@ -17,7 +18,7 @@ const client = new Client({
 
 client.config = require('./config.js');
 client.functions = new (require('./structures/Functions.js'))(client);
-//client.db = new (require('./structures/Database.js'))(client);
+client.db = new QuickDB();
 client.google = new (require('./structures/GoogleSheet.js'))(client);
 client.logger = new (require('./structures/Logger.js'))();
 

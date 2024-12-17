@@ -1,5 +1,3 @@
-const { createPool } = require("mysql");
-
 module.exports = class Database {
     constructor(client) {
         this.client = client;
@@ -9,33 +7,6 @@ module.exports = class Database {
             .then(() => this.client.logger.db("Database connected"))
             .catch((error) => this.client.logger.error("Database connect error"));
     }
-
-    async _queryOne(sql, values) {
-        return new Promise((resolve, reject) => {
-            this.pool.query(sql, values, (error, results) => {
-                if (error) {
-                    this.client.logger.error(sql)
-                    this.client.logger.error(`> ${error.sqlMessage}\n──────── 📛 FULL ERROR 📛 ────────`, "DATABASE QUERYONE ERROR");
-                    return reject(error);
-                }
-                resolve(results[0]);
-            });
-        });
-    }
-
-    async _query(sql, values) {
-        return new Promise((resolve, reject) => {
-            this.pool.query(sql, values, (error, results) => {
-                if (error) {
-                    this.client.logger.error(sql)
-                    this.client.logger.error(`> ${error.sqlMessage}\n──────── 📛 FULL ERROR 📛 ────────`, "DATABASE QUERY ERROR");
-                    return reject(error);
-                }
-                resolve(results);
-            });
-        });
-    }
-
 
     // Employees
 
