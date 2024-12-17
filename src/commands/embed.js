@@ -60,7 +60,7 @@ module.exports = {
         if (!description) return errorEmbed("You must provide a description.");
 
         const embed = new EmbedBuilder()
-            .setColor(client.config.colors.default)
+            .setColor(client.config.embed.color)
             .setDescription(description)
 
         if (color) embed.setColor(color);

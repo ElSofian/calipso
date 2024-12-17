@@ -83,27 +83,4 @@ module.exports = class Database {
     async deleteEmployee(userId) {
         return this._query("DELETE FROM employees WHERE user_id = ?", [userId]);
     }
-
-
-    // Pumps
-
-    async getPumps() {
-        return this._query("SELECT * FROM pumps");
-    }
-
-    async getPumpsFuel() {
-        return this._query("SELECT label, fuel FROM pumps");
-    }
-
-    async getPumpsPrice() {
-        return this._query("SELECT label, price FROM pumps");
-    }
-
-    async setPumpFuel(label, fuel) {
-        return this._query("UPDATE pumps SET fuel = ? WHERE label = ?", [fuel, label]);
-    }
-
-    async setPumpPrice(label, price) {
-        return this._query("UPDATE pumps SET price = ? WHERE label = ?", [price, label]);
-    }
 }

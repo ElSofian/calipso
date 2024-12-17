@@ -29,7 +29,7 @@ module.exports = {
 		// 	const channel = client.channels.cache.get(client.config.channels.calendarId);
 		// 	if (channel) {
 		// 		const embed = new EmbedBuilder()
-		// 			.setColor(client.config.colors.default)
+		// 			.setColor(client.config.embed.color)
 		// 			.setTitle(`Jour ${new Date().getDate()} sur 31`)
 		// 			.setDescription("Aujourd'hui, la surprise est ... !")
 		// 			.setTimestamp();

@@ -47,9 +47,7 @@ module.exports = {
     
         employeeMember.roles.remove([
             client.config.roles.employee,
-            client.config.roles.separationLtd,
-            client.config.roles.separationSales,
-            client.config.roles.separationFuel,
+            client.config.roles.separationEmployee,
             client.config.roles.separationSpeciality,
         ]).catch(e => console.error(e));
 

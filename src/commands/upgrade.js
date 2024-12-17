@@ -18,14 +18,10 @@ module.exports = {
             choices: [
                 { name: "Responsable", value: "Responsable" },
                 { name: "Ressources Humaines", value: "Ressources Humaines" },
-                { name: "Chef d'équipe Vendeur", value: "Chef d'équipe Vendeur" },
-                { name: "Chef d'équipe Pompiste", value: "Chef d'équipe Pompiste" },
+                { name: "Chef d'équipe", value: "Chef d'équipe" },
                 { name: "Vendeur Expérimenté", value: "Vendeur Expérimenté" },
-                { name: "Pompiste Expérimenté", value: "Pompiste Expérimenté" },
                 { name: "Vendeur", value: "Vendeur" },
-                { name: "Pompiste", value: "Pompiste" },
                 { name: "Vendeur Novice", value: "Vendeur Novice" },
-                { name: "Pompiste Novice", value: "Pompiste Novice" },
             ],
             required: false
         }

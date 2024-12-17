@@ -8,7 +8,7 @@ module.exports = {
 
 		// Functions
 
-		function fastEmbed(description, color = client.config.colors.default) {
+		function fastEmbed(description, color = client.config.embed.color) {
 			return new EmbedBuilder().setColor(color).setDescription(description);
 		}
 		
@@ -36,80 +36,6 @@ module.exports = {
 		try {
 			if (interaction.type == InteractionType.ApplicationCommand) return command.run(client, interaction, { errorEmbed, successEmbed });
 			if (interaction.type == InteractionType.MessageComponent || interaction.type == InteractionType.ModalSubmit) {
-				
-
-				// INTERACTION WITH FUEL EMBED
-
-				if (interaction.customId == "sm" && interaction.message.id == client.config.messages.msgPumpsId) {
-
-					const embed = interaction.message.embeds[0];
-					if (!embed) return interaction.reply({ content: "Erreur : embed introuvable.", ephemeral: true });
-
-					const pumps = await client.db.getPumps();
-					const pump = pumps.find(p => p.label == interaction.values[0].replace(" 🚨", ""))
-
-					const firstInteraction = await interaction.reply({ 
-						embeds: [fastEmbed(`Combien de litres possède la pompe maintenant ?\n**IMPORTANT:** Répondez en me mentionnant au début ! Exemple: <@${client.user.id}> 3500`)], 
-						ephemeral: true 
-					});
-					if (!firstInteraction) return;
-
-					const filter = m => m.author.id == interaction.member.user.id && (m.content.startsWith(`<@${client.user.id}>`) || m.content.startsWith(`<@!${client.user.id}>`));
-					const collector = interaction.channel.createMessageCollector({ filter, time: 60000 });
-
-					collector.on('collect', async m => {
-						const litres = parseInt(m.content.replace(/<@!?\d+>/, '').trim());
-						if (isNaN(litres)) return await interaction.followUp({ embeds: [fastEmbed("Veuillez entrer un nombre valide.", "Red")], ephemeral: true });
-
-						if (!pump) {
-							m.delete().catch(() => {});
-							return await interaction.followUp({ embeds: [fastEmbed("Pompe non trouvée.", "Red")], ephemeral: true });
-						}
-
-						if (litres > pump.pumpLimit) {
-							m.delete().catch(() => {});
-							return await interaction.followUp({ embeds: [fastEmbed(`La pompe **${pump.label}** ne peut pas avoir plus de **${pump.pumpLimit} litres**.`, "Red")], ephemeral: true });
-						}
-						pump.fuel = litres;
-
-						embed.fields = embed.fields.map(field => {
-							if (field.name.replace(" 🚨", "") === pump.label) {
-								const isAlert = pump.fuel < pump.alertAmount;
-								field.name = `${pump.label}${isAlert ? " 🚨" : ""}`;
-								field.value = `» ${pump.fuel} litres`;
-							}
-							return field;
-						});
-
-						const sm = new StringSelectMenuBuilder()
-							.setCustomId("sm")
-							.setPlaceholder("Choisissez la pompe que vous voulez remplir");
-
-						for (const pump of pumps) {
-							sm.addOptions(
-								new StringSelectMenuOptionBuilder()
-									.setLabel(`${pump.label}${pump.fuel < pump.alertAmount ? " 🚨" : ""}`)
-									.setValue(pump.label)
-							);
-						}
-
-						const row = new ActionRowBuilder().addComponents(sm);
-
-						await interaction.message.edit({ embeds: [embed], components: [row] });
-						await interaction.followUp({ 
-							embeds: [fastEmbed(`Vous avez mis la pompe **${pump.label}** à **${litres} litres**.`)], 
-							ephemeral: true 
-						});
-
-						firstInteraction.delete().catch(() => {});
-						m.delete().catch(() => {});
-						collector.stop();
-					});
-					return;
-				}
-
-				// -----------------------------------------
-
 
 				// INTERACTION WITH ABSENCE BUTTON
 
@@ -181,7 +107,7 @@ module.exports = {
 					const customId = interaction.customId;
 					
 					const embed = new EmbedBuilder()
-					.setColor(client.config.colors.default)
+					.setColor(client.config.embed.color)
 					.setTitle(customId == "phone" ? "Numéro de Téléphone" : "IBAN")
 					.setDescription(`Veuillez entrer votre ${customId == "phone" ? "nouveau numéro de téléphone" : "nouvel IBAN"}.
 						

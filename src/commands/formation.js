@@ -17,8 +17,8 @@ module.exports = {
         const formation = interaction.options.getString("formation");
         
         const embed = new EmbedBuilder()
-        .setColor(client.config.colors.default)
-        .setThumbnail("https://imgur.com/tofyuIy.png")
+        .setColor(client.config.embed.color)
+        .setThumbnail(client.config.embed.thumbnail)
         .setTitle(`Formation ${formation}`)
         
         let roleId;
