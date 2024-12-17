@@ -11,6 +11,9 @@ module.exports = {
         required: false
     }],
     run: async(client, interaction, { successEmbed, errorEmbed }) => {
+        
+        if (interaction.member.id != "683269450086219777") return errorEmbed("Vous n'avez pas la permission d'utiliser cette commande.");
+        
         const employee = interaction.options.getUser("employé");
         if (!employee) {
             const employees = await client.db.getEmployees();

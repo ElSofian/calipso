@@ -40,6 +40,9 @@ module.exports = {
         ]
     }],
     run: async (client, interaction, { successEmbed, errorEmbed }) => {
+        
+        await interaction.deferReply({ ephemeral: true });
+
         const subcommand = interaction.options.getSubcommand();
 
         if (subcommand == "spécialité") {
@@ -52,11 +55,11 @@ module.exports = {
 
             specialities = [...new Set(specialities)];
 
-            if (!employee) return errorEmbed("L'employé est introuvable.");
-            if (!specialities.length) return errorEmbed("Aucune spécialité n'a été sélectionnée.");
+            if (!employee) return errorEmbed("L'employé est introuvable.", false, "editReply");
+            if (!specialities.length) return errorEmbed("Aucune spécialité n'a été sélectionnée.", false, "editReply");
 
             const employeeData = await client.db.getEmployee(employee.id);
-            if (!employeeData) return errorEmbed("L'employé est introuvable.");
+            if (!employeeData) return errorEmbed("L'employé est introuvable.", false, "editReply");
 
             const alreadyHasSpecialities = specialities.filter(speciality => employeeData.specialities.includes(speciality));
             if (alreadyHasSpecialities.length > 0) {
@@ -70,7 +73,7 @@ module.exports = {
             }
 
             if (!addedSpecialities.length)
-                return errorEmbed("Aucune spécialité n'a pu être ajoutée.");
+                return errorEmbed("Aucune spécialité n'a pu être ajoutée.", false, "editReply");
 
             const data = {
                 action: "addSpeciality",
@@ -81,7 +84,7 @@ module.exports = {
 
             await client.google.post(data);
 
-            successEmbed(`Les spécialités **${addedSpecialities.join(", ")}** ont bien été ajoutées à ${employee}.`);
+            successEmbed(`Les spécialités **${addedSpecialities.join(", ")}** ont bien été ajoutées à ${employee}.`, false, false, "editReply");
         }
     }
 };

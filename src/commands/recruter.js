@@ -59,7 +59,7 @@ module.exports = {
     admin: true,
     run: async(client, interaction, { successEmbed, errorEmbed }) => {
         
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: true });
         
         const employee = interaction.options.getUser("employé");
         const nom = interaction.options.getString("nom");
@@ -75,6 +75,18 @@ module.exports = {
 
         const employeeData = await client.db.getEmployee(employee.id);
         if (employeeData) return errorEmbed("Cet employé est déjà présent dans la base de données de l'entreprise.", false, "editReply");
+
+        const executorData = await client.db.getEmployee(interaction.user.id);
+        if (!executorData) return errorEmbed("Vos informations n'ont pas été trouvées dans la base de données.", false, "editReply");
+
+        const executorGradeIndex = roles.grades.findIndex(role => role === executorData.grade);
+        const targetGradeIndex = roles.grades.findIndex(role => role === grade);
+
+        if (executorGradeIndex === -1) return errorEmbed("Votre grade actuel est invalide.", false, "editReply");
+        if (targetGradeIndex === -1) return errorEmbed("Le grade cible est invalide.", false, "editReply");
+
+        if (executorGradeIndex <= targetGradeIndex)
+            return errorEmbed(`Vous ne pouvez pas recruter cet employé au grade **${grade}** car votre grade actuel (**${executorData.grade}**) est en dessous ou au même niveau.`, false, "editReply");
 
         try {
 

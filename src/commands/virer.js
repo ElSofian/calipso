@@ -14,7 +14,7 @@ module.exports = {
     admin: true,
     run: async(client, interaction, { successEmbed, errorEmbed }) => {
         
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: true });
         
         const employee = interaction.options.getUser("employé");
     
