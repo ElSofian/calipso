@@ -1,4 +1,4 @@
-const { Events, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, InteractionType, ModalBuilder, TextInputBuilder, TextInputStyle, PermissionFlagsBits } = require('discord.js');
+const { Events, EmbedBuilder, ActionRowBuilder, ChannelType, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, InteractionType, ModalBuilder, TextInputBuilder, TextInputStyle, PermissionFlagsBits } = require('discord.js');
 const axios = require('axios');
 
 module.exports = {
@@ -33,9 +33,63 @@ module.exports = {
 			if (interaction.type == InteractionType.ApplicationCommand) return command.run(client, interaction, { errorEmbed, successEmbed });
 			if (interaction.type == InteractionType.MessageComponent || interaction.type == InteractionType.ModalSubmit) {
 				
+				// INTERACTION WITH TICKET
+
+				if (interaction.customId == "ticket" && interaction.message.id == client.config.messages.ticketId) {
+					// create a channel in 1318371631424606228 category
+					const category = interaction.guild.channels.cache.get("1318371631424606228");
+					if (!category) return console.error("Category not found.");
+
+					const ticket = interaction.guild.channels.cache.find(c => c.name == interaction.member?.nickname?.toLowerCase()?.replace(" ", "-") || c.name == interaction.member.user.username.toLowerCase().replace(" ", "-"));
+					if (ticket) return errorEmbed(`Vous avez déjà un ticket ouvert dans ${ticket}.`)
+
+					const channel = await interaction.guild.channels.create({
+						name: interaction.member.nickname || interaction.member.user.username,
+						type: ChannelType.GuildText,
+						parent: category,
+						permissionOverwrites: [
+							{
+								id: interaction.member.id,
+								allow: PermissionFlagsBits.ViewChannel,
+							},
+							{
+								id: interaction.guild.roles.everyone,
+								deny: PermissionFlagsBits.ViewChannel,
+							},
+						],
+					});
+					if (!channel) return console.error("Channel not created.");
+
+					const row = new ActionRowBuilder().addComponents(
+						new ButtonBuilder().setCustomId("close").setStyle(ButtonStyle.Danger).setLabel("Fermer le ticket").setEmoji("🔒")
+					)
+
+					const embed = new EmbedBuilder()
+						.setColor(client.config.embed.color)
+						.setAuthor({ name: interaction.member.nickname || interaction.member.user.username, iconURL: interaction.member.user.displayAvatarURL() })
+						.setDescription(`Bienvenue dans votre ticket de support.,
+						
+						Nous vous remercions de nous avoir contacté.
+						Un membre de notre équipe va bientôt vous répondre. Merci de patienter.
+							
+						**Cordialement,
+						Hérmès - Assistant Calipso**`);
+
+					channel.send({ embeds: [embed], components: [row], ephemeral: true });
+					successEmbed(`Votre ticket a été créé dans ${channel}.`, false, true).catch(() => {});
+				}
+
+				if (interaction.customId == "close") {
+					const channel = interaction.channel;
+					if (!channel) return console.error("Channel not found.");
+
+					await channel.delete().catch(e => console.error(e));
+				}
+				
+				
 				// INTERACTION WITH ABSENCE BUTTON
 
-				if (interaction.customId == "absence" && interaction.message.id == client.config.messages.msgAbsenceId) {
+				if (interaction.customId == "absence" && interaction.message.id == client.config.messages.absenceId) {
 					const modal = new ModalBuilder()
 						.setCustomId("m_absence")
 						.setTitle("Absence")
@@ -99,7 +153,7 @@ module.exports = {
 
 				// INTERACTION WITH PHONE/IBAN BUTTON
 
-				if ((interaction.customId == "phone" || interaction.customId == "iban") && interaction.message.id == client.config.messages.msgEditId) {
+				if ((interaction.customId == "phone" || interaction.customId == "iban") && interaction.message.id == client.config.messages.editId) {
 					const customId = interaction.customId;
 					
 					const embed = new EmbedBuilder()

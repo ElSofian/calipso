@@ -8,6 +8,7 @@ module.exports = {
         description: "L'embed à envoyer",
         type: ApplicationCommandOptionType.String,
         choices: [
+            { name: "Ticket", value: "ticket" },
             { name: "Absences", value: "absence" },
             { name: "Modification d'informations pour employés", value: "edit" }
         ],
@@ -22,6 +23,23 @@ module.exports = {
         const components = new ActionRowBuilder()
         
         switch(embedType) {
+            case "ticket": {
+                const row = new ButtonBuilder()
+                .setCustomId("ticket")
+                .setStyle(ButtonStyle.Primary)
+                .setLabel("Contactez-nous")
+                .setEmoji("📩")
+                
+                embed.setTitle("Assistant Calipso")
+                .setDescription(`Bienvenue sur le serveur de support de Calipso !
+                    
+                Si vous avez une question ou un problème, n'hésitez pas à nous contacter en appuyant sur le bouton ci-dessous.
+                Notre **CEO** se fera un plaisir de vous recevoir !`)
+
+                components.addComponents(row);
+                break;
+            }
+            
             case "absence": {
 
                 const row = new ButtonBuilder()
