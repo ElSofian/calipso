@@ -7,10 +7,6 @@ module.exports = {
 		if(!interaction.inGuild() || !interaction.guildId) return;
 
 		// Functions
-
-		function fastEmbed(description, color = client.config.embed.color) {
-			return new EmbedBuilder().setColor(color).setDescription(description);
-		}
 		
 		function errorEmbed(description, justEmbed = false, replyType = "reply", ephemeral = true) {
 			if(!justEmbed) return interaction[replyType]({ embeds: [new EmbedBuilder().setColor("Red").setDescription(description)], components: [], content: null, files: [], ephemeral: ephemeral }).catch(() => {});
@@ -30,7 +26,7 @@ module.exports = {
 			return;
 		}
 
-		if (command?.admin && (!interaction.member.permissions.has(PermissionFlagsBits.Administrator) || !interaction.member.roles.cache.has(client.config.roles.manage))) return errorEmbed("Vous n'avez pas la permission d'utiliser cette commande.");
+		if (command?.admin && !client.config.admins.includes(interaction.member.id) && !interaction.member.roles.cache.has(client.config.roles.manage)) return errorEmbed("Vous n'avez pas la permission d'utiliser cette commande.");
 		if (command?.employeeOnly && !interaction.member.roles.cache.has(client.config.roles.employeeRoleId)) return errorEmbed("Vous n'avez pas la permission d'utiliser cette commande.");
 
 		try {
